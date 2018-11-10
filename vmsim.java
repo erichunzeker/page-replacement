@@ -1,4 +1,5 @@
 import java.io.*;
+import java.lang.reflect.Array;
 import java.util.*;
 
 public class vmsim {
@@ -82,7 +83,61 @@ public class vmsim {
 
     }
     public static void clock(BufferedReader br) throws IOException {
-        ArrayList<Page> clock = new ArrayList<>();
+        Page[] clock = new Page[numframes];
+        int count = 0;
+
+        String st;
+        while ((st = br.readLine()) != null) {
+            String addr = st.substring(0, 5);
+            String action = st.substring(9, 10);
+
+            if(count < numframes) {
+                boolean nofault = false;
+                for(int i = 0; i < count; i++) {
+                    if(clock[i].addr.equals(addr))
+                        nofault = true;
+                }
+                if(!nofault) {
+                    clock[count] = new Page(addr, 1);
+                    count++;
+                    pagefaults++;
+                }
+            }
+
+            else {
+                boolean nofault = false;
+                for(Page p : clock) {
+                    if(p.addr.equals(addr))
+                        nofault = true;
+                }
+
+                if(!nofault) {
+                    boolean replaced = false;
+                    for(int i = 0; i < clock.length; i++) {
+                        if(clock[i].bit == 0) {
+                            clock[i] = new Page(addr, 1);
+                            replaced = true;
+                            pagefaults++;
+                            break;
+                        }
+                        else {
+                            Page temp = clock[i];
+                            clock[i] = new Page(temp.addr, 0);
+                        }
+                    }
+                    if(!replaced) {
+                        clock[0] = new Page(addr, 1);
+                        pagefaults++;
+                    }
+                }
+            }
+
+            if(action.equals("W"))
+                writes++;
+            memaccess++;
+        }
+
+        /*ArrayList<Page> clock = new ArrayList<>();
         String st;
         while ((st = br.readLine()) != null) {
             String addr = st.substring(0, 5);
@@ -122,7 +177,7 @@ public class vmsim {
             if(action.equals("W"))
                 writes++;
             memaccess++;
-        }
+        }*/
 
     }
     public static void opt(BufferedReader br) throws IOException {

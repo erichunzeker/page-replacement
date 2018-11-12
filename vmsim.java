@@ -98,11 +98,11 @@ public class vmsim {
                 if(!nofault) {
                     if(action.equals("W")) {
                         table[count] = new Page(addr, 1, 1);
-                        System.out.println("hit" + "\n" + "page fault - evict dirty");
+                        //System.out.println("hit" + "\n" + "page fault - evict dirty");
                     }
                     else {
                         table[count] = new Page(addr, 1, 0);
-                        System.out.println("hit" + "\n" + "page fault - evict clean");
+                        //System.out.println("hit" + "\n" + "page fault - evict clean");
                     }
                     count++;
 
@@ -135,7 +135,7 @@ public class vmsim {
                             else
                                 table[i] = new Page(addr, 1, 0);
                             replaced = true;
-                            System.out.println("hit" + "\n" + "page fault - evict clean");
+                            //System.out.println("hit" + "\n" + "page fault - evict clean");
                             pagefaults++;
                             break;
                         }
@@ -150,15 +150,15 @@ public class vmsim {
 
                         if(second > -1) {
                             index = second;
-                            System.out.println("hit" + "\n" + "page fault - evict dirty");
+                            //System.out.println("hit" + "\n" + "page fault - evict dirty");
                         }
                         else if(third > -1) {
                             index = third;
-                            System.out.println("hit" + "\n" + "page fault - evict clean");
+                            //System.out.println("hit" + "\n" + "page fault - evict clean");
                         }
                         else {
                             index = 0;
-                            System.out.println("hit" + "\n" + "page fault - evict dirty");
+                            //System.out.println("hit" + "\n" + "page fault - evict dirty");
 
                         }
 
@@ -198,13 +198,16 @@ public class vmsim {
             if(count < numframes) {
                 boolean nofault = false;
                 for(int i = 0; i < count; i++) {
-                    if(clock[i].addr.equals(addr))
+                    if(clock[i].addr.equals(addr)) {
                         nofault = true;
+                        System.out.println("hit");
+                    }
                 }
                 if(!nofault) {
                     clock[count] = new Page(addr, 1);
                     count++;
                     pagefaults++;
+                    System.out.println("page fault - no eviction");
                 }
             }
 
@@ -299,9 +302,6 @@ public class vmsim {
         while ((memString = second.readLine()) != null) {
             String addr = memString.substring(0, 5);
             mem.add(addr);
-            if(mem.size() > 100000)
-                break;
-
         }
 
         second.close();
@@ -354,8 +354,10 @@ public class vmsim {
                         table.add(maxIndex, addr);
 
                     }
-                    else
+                    else {
                         table.remove(maxIndex);
+                        table.add(maxIndex, addr);
+                    }
                 }
             }
             if(action.equals("W"))

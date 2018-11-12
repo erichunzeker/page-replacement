@@ -299,6 +299,8 @@ public class vmsim {
         while ((memString = second.readLine()) != null) {
             String addr = memString.substring(0, 5);
             mem.add(addr);
+            if(mem.size() > 100000)
+                break;
 
         }
 
@@ -321,9 +323,7 @@ public class vmsim {
 
                     int[] index = new int[numframes];
 
-                    if(numframes + 1<mem.size())
-                        for(int i = 0; i < numframes; i++)
-                            mem.remove(0);
+                    mem.remove(0);
 
                     for(int i = 0; i < numframes; i++){
                         index[i] = mem.indexOf(table.get(i));
@@ -332,7 +332,7 @@ public class vmsim {
                     int max = -1;
                     int maxIndex = 0;
 
-
+                    int replace = -1;
 
 
                     for(int i = 0; i < numframes; i++) {
@@ -340,13 +340,22 @@ public class vmsim {
                             max = index[i];
                             maxIndex = i;
                         }
+                        if(index[i] == 0)
+                            replace = i;
                     }
 
-                    if(max == -1)
+                    if(replace != -1) {
+                        table.remove(replace);
+                        table.add(replace, addr);
+                    }
+
+                    else if(max == -1) {
                         table.remove(0);
+                        table.add(maxIndex, addr);
+
+                    }
                     else
                         table.remove(maxIndex);
-                    table.add(maxIndex, addr);
                 }
             }
             if(action.equals("W"))

@@ -1,5 +1,4 @@
 import java.io.*;
-import java.lang.reflect.Array;
 import java.util.*;
 
 public class vmsim {
@@ -91,6 +90,7 @@ public class vmsim {
                 for(int i = 0; i < count; i++) {
                     if(table[i].addr.equals(addr)) {
                         nofault = true;
+                        System.out.println("hit");
                         if(action.equals("W"))
                             table[i].dirty = 1;
                         else
@@ -100,11 +100,11 @@ public class vmsim {
                 if(!nofault) {
                     if(action.equals("W")) {
                         table[count] = new Page(addr, 1, 1);
-                        //System.out.println("hit" + "\n" + "page fault - evict dirty");
+                        System.out.println("page fault - evict dirty");
                     }
                     else {
                         table[count] = new Page(addr, 1, 0);
-                        //System.out.println("hit" + "\n" + "page fault - evict clean");
+                        System.out.println("page fault - evict clean");
                     }
                     count++;
 
@@ -116,6 +116,7 @@ public class vmsim {
                 boolean nofault = false;
                 for(Page p : table) {
                     if(p.addr.equals(addr)) {
+                        System.out.println("hit");
                         nofault = true;
                         if(action.equals("W"))
                             p.dirty = 1;
@@ -137,7 +138,7 @@ public class vmsim {
                             else
                                 table[i] = new Page(addr, 1, 0);
                             replaced = true;
-                            //System.out.println("hit" + "\n" + "page fault - evict clean");
+                            System.out.println("page fault - evict clean");
                             pagefaults++;
                             break;
                         }
@@ -152,15 +153,15 @@ public class vmsim {
 
                         if(second > -1) {
                             index = second;
-                            //System.out.println("hit" + "\n" + "page fault - evict dirty");
+                            System.out.println("page fault - evict dirty");
                         }
                         else if(third > -1) {
                             index = third;
-                            //System.out.println("hit" + "\n" + "page fault - evict clean");
+                            System.out.println("page fault - evict clean");
                         }
                         else {
                             index = 0;
-                            //System.out.println("hit" + "\n" + "page fault - evict dirty");
+                            System.out.println("page fault - evict dirty");
 
                         }
 
@@ -184,9 +185,7 @@ public class vmsim {
                 }
             }
         }
-
     }
-
 
     public static void clock(BufferedReader br) throws IOException {
         Page[] clock = new Page[numframes];
@@ -319,11 +318,11 @@ public class vmsim {
 
             if(!table.contains(addr)) {
                 if(table.size() < numframes){
-                    //System.out.println("hit" + "\n" + "page fault - no eviction");
+                    System.out.println("page fault - no eviction");
                     pagefaults++;
                     table.add(addr);
                 } else {
-                    //System.out.println("hit" + "\n" + "page fault - eviction");
+                    System.out.println("page fault - eviction");
                     pagefaults++;
 
                     int[] index = new int[numframes];
@@ -365,6 +364,8 @@ public class vmsim {
                     }
                 }
             }
+            else
+                System.out.println("hit");
             if(action.equals("W"))
                 writes++;
             memaccess++;

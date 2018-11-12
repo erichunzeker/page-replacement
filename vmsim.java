@@ -58,16 +58,18 @@ public class vmsim {
 
             if(!table.contains(addr)) {
                 if(table.size() < numframes){
-                    System.out.println("hit" + "\n" + "page fault - no eviction");
+                    System.out.println("page fault - no eviction");
                     pagefaults++;
                     table.add(addr);
                 } else {
-                    System.out.println("hit" + "\n" + "page fault - eviction");
+                    System.out.println("page fault - eviction");
                     pagefaults++;
                     table.remove(0);
                     table.add(addr);
                 }
             }
+            else
+                System.out.println("hit");
             if(action.equals("W"))
                 writes++;
             memaccess++;
@@ -214,8 +216,10 @@ public class vmsim {
             else {
                 boolean nofault = false;
                 for(Page p : clock) {
-                    if(p.addr.equals(addr))
+                    if(p.addr.equals(addr)) {
                         nofault = true;
+                        System.out.println("hit");
+                    }
                 }
 
                 if(!nofault) {
@@ -224,6 +228,7 @@ public class vmsim {
                         if(clock[i].bit == 0) {
                             clock[i] = new Page(addr, 1);
                             replaced = true;
+                            System.out.println("page fault - evict clean");
                             pagefaults++;
                             break;
                         }
